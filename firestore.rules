@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // transactions koleksiyonu içerisindeki tüm dökümanlara izin ver
+    match /transactions/{document=**} {
+      // write = create, delete, update
+      // allow read, write;
+
+      // kullanıcı varsa izin ver
+      allow create: if request.auth != null;
+
+      // sistemdeki kullanıcı, dökümandaki kullanıcıya eşitse izin ver
+      allow read, delete: if request.auth.uid == resource.data.uid;
+    }
+  }
+}
